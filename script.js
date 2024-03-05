@@ -64,8 +64,13 @@ function addItemToDOM(item) {
     const button = createButton('remove-item btn-link text-red');
     li.appendChild(button);
 
-    // Add li to the DOM
-    itemList.appendChild(li);
+    const firstItem = itemList.firstChild;
+
+    // // Add li to the DOM as last item/ last child of the list
+    // itemList.appendChild(li);
+
+    // Add li to the DOM as the first item of the list 
+    itemList.insertBefore(li, firstItem);
 }
 
 
