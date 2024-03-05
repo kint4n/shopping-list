@@ -5,6 +5,15 @@ const clearBtn = document.querySelector('#clear');
 const itemFilter = document.querySelector('#filter');
 
 // Functions
+
+function displayItems() {
+    const itemsFromStorage = getItemsFromStorage();
+
+    itemsFromStorage.forEach(item => addItemToDOM(item));
+
+    checkUI();
+}
+
 function onAddItemSubmit(e) {
     e.preventDefault();
 
@@ -42,8 +51,26 @@ function addItemToDOM(item) {
     itemList.appendChild(li);
 }
 
+
+function createButton(classes) {
+    const button = document.createElement('button');
+    button.className = classes;
+    
+    const icon = createIcon('fa-solid fa-xmark');
+    button.appendChild(icon);
+    
+    return button;
+}
+
+function createIcon(classes) {
+    const icon = document.createElement('i');
+    icon.className = classes;
+    
+    return icon;
+}
+
 function addItemToStorage(item) {
-    let itemsFromStorage;
+    const itemsFromStorage = getItemsFromStorage(item);
 
     if(localStorage.getItem('items') === null) {
         itemsFromStorage = [];
@@ -60,29 +87,25 @@ function addItemToStorage(item) {
 
 }
 
-function createButton(classes) {
-    const button = document.createElement('button');
-    button.className = classes;
+function getItemsFromStorage() {
+    let itemsFromStorage;
 
-    const icon = createIcon('fa-solid fa-xmark');
-    button.appendChild(icon);
+    if(localStorage.getItem('items') === null) {
+        itemsFromStorage = [];
+    }
+    else {
+        itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    }
 
-    return button;
-}
-
-function createIcon(classes) {
-    const icon = document.createElement('i');
-    icon.className = classes;
-
-    return icon;
+    return itemsFromStorage;
 }
 
 function removeItem(e) {
     if(e.target.parentElement.classList.contains('remove-item')) {
         if(confirm('Are you sure you want to delete this item?'))
-            e.target.parentElement.parentElement.remove();
+        e.target.parentElement.parentElement.remove();
     }
-
+    
     checkUI();
 }
 
@@ -127,11 +150,16 @@ function checkUI() {
     }
 }
 
+// Initialize App
+function init() {
+    // Event listeners
+    itemForm.addEventListener('submit', onAddItemSubmit);
+    itemList.addEventListener('click', removeItem);
+    clearBtn.addEventListener('click', clearItems);
+    itemFilter.addEventListener('input', filterItems);
+    document.addEventListener('DOMContentLoaded', displayItems);
+    
+    checkUI();
+}
 
-// Event listeners
-itemForm.addEventListener('submit', onAddItemSubmit);
-itemList.addEventListener('click', removeItem);
-clearBtn.addEventListener('click', clearItems);
-itemFilter.addEventListener('input', filterItems);
-
-checkUI();
+init();
