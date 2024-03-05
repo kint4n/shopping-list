@@ -123,11 +123,12 @@ function getItemsFromStorage() {
 }
 
 function onClickItem(e) {
+    console.log(e.target);
     if(e.target.parentElement.classList.contains('remove-item')) {
         removeItem(e.target.parentElement.parentElement);
     }
     else {
-        setItemToEdit(e.target);
+        toggleItemEditMode(e.target);
     }
 
 }
@@ -144,14 +145,28 @@ function setItemToEdit(item) {
 
     // Only 1 item can be selected to be updated at a time
     itemList.querySelectorAll('li').forEach(i => i.classList.remove('edit-mode'));
-
     item.classList.add('edit-mode');
 
     formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
-
     formBtn.style.backgroundColor = '#228B22';
     itemInput.value = item.textContent;
+}
 
+function exitItemEditMode(item) {
+    isEditMode = false;
+
+    item.classList.remove('edit-mode');
+    formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+    formBtn.style.backgroundColor = '#333';
+}
+
+function toggleItemEditMode(item) {
+    if(item.classList.contains('edit-mode')) {
+        exitItemEditMode(item);
+    }
+    else {
+        setItemToEdit(item);
+    }
 }
 
 function removeItem(item) {
