@@ -3,9 +3,10 @@ const itemInput = document.querySelector('#item-input');
 const itemList = document.querySelector('#item-list');
 const clearBtn = document.querySelector('#clear');
 const itemFilter = document.querySelector('#filter');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
 
 // Functions
-
 function displayItems() {
     const itemsFromStorage = getItemsFromStorage();
 
@@ -104,6 +105,24 @@ function onClickItem(e) {
     if(e.target.parentElement.classList.contains('remove-item')) {
         removeItem(e.target.parentElement.parentElement);
     }
+    else {
+        setItemToEdit(e.target);
+    }
+
+}
+
+function setItemToEdit(item) {
+    isEditMode = true;
+
+    // Only 1 item can be selected to be updated at a time
+    itemList.querySelectorAll('li').forEach(i => i.classList.remove('edit-mode'));
+
+    item.classList.add('edit-mode');
+
+    formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+
+    formBtn.style.backgroundColor = '#228B22';
+    itemInput.value = item.textContent;
 
 }
 
