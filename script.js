@@ -34,7 +34,12 @@ function onAddItemSubmit(e) {
         itemToEdit.classList.remove('.edit-mode');
         itemToEdit.remove();
         isEditMode = false;
-
+    }
+    else {
+        if(checkIfItemExists(newItem)) {
+            alert("Item is already in the list. Please enter a new item.");
+            return;
+        }
     }
 
     // Create item DOM element
@@ -120,6 +125,13 @@ function onClickItem(e) {
         setItemToEdit(e.target);
     }
 
+}
+
+// Prevent duplicate list items
+function checkIfItemExists(item) {
+    const itemsFromStorage = getItemsFromStorage();
+
+    return itemsFromStorage.includes(item);
 }
 
 function setItemToEdit(item) {
