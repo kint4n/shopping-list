@@ -70,7 +70,7 @@ function createIcon(classes) {
 }
 
 function addItemToStorage(item) {
-    const itemsFromStorage = getItemsFromStorage(item);
+    let itemsFromStorage = getItemsFromStorage(item);
 
     if(localStorage.getItem('items') === null) {
         itemsFromStorage = [];
@@ -100,18 +100,42 @@ function getItemsFromStorage() {
     return itemsFromStorage;
 }
 
-function removeItem(e) {
+function onClickItem(e) {
     if(e.target.parentElement.classList.contains('remove-item')) {
-        if(confirm('Are you sure you want to delete this item?'))
-        e.target.parentElement.parentElement.remove();
+        removeItem(e.target.parentElement.parentElement);
     }
-    
-    checkUI();
+
+}
+
+function removeItem(item) {
+    if(confirm('Do you want to delete this item?')) {
+        // Remove item from DOM
+        item.remove();
+
+        // Remove item from local storage
+        removeItemFromStorage(item.textContent);
+
+        checkUI();
+
+    }
+}
+
+function removeItemFromStorage(item) {
+    let itemsFromStorage = getItemsFromStorage();
+
+    itemsFromStorage = itemsFromStorage.filter(i => i !== item);
+
+    // Re-set to local storage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 function clearItems() {
-    while(itemList.firstChild) {
-        itemList.removeChild(itemList.firstChild);
+    if(confirm('Do you want to clear all your items?')) {
+        while(itemList.firstChild) {
+            itemList.removeChild(itemList.firstChild);
+        }
+        // Clear from local storage
+        localStorage.removeItem('items');
     }
 
     checkUI();
@@ -154,7 +178,7 @@ function checkUI() {
 function init() {
     // Event listeners
     itemForm.addEventListener('submit', onAddItemSubmit);
-    itemList.addEventListener('click', removeItem);
+    itemList.addEventListener('click', onClickItem);
     clearBtn.addEventListener('click', clearItems);
     itemFilter.addEventListener('input', filterItems);
     document.addEventListener('DOMContentLoaded', displayItems);
